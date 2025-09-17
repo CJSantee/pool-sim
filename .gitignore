@@ -1,0 +1,34 @@
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pkl
+*.egg-info/
+.eggs/
+*.log
+
+# --- Virtual environments ---
+venv/
+.env/
+.venv/
+env/
+
+# --- Build / distribution ---
+build/
+dist/
+*.spec
+*.manifest
+
+# --- OS-specific ---
+.DS_Store
+Thumbs.db
+
+# --- IDE / Editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Pygame / Pymunk related (if you add assets) ---
+assets/*.tmp
