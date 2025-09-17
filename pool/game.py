@@ -1,6 +1,7 @@
 import pygame
 import pymunk
 import random
+import math
 from pool.table import Table
 from pool.ball import Ball
 from pool.cue_ball import CueBall
@@ -32,14 +33,16 @@ class PoolGame:
         # Table boundaries
         self.table = Table(self.space)
 
-        # Add a ball
-        self.cue_ball = CueBall(self.space, (200, 600))
+        self.reset()
 
-        # Add cue
+        self.running = True
+
+    def reset(self):
+        self.cue_ball = CueBall(self.space, (200, 600))
         self.cue = Cue(self.cue_ball)
 
         positions = Ball.rack_positions((200, 200), self.cue_ball.radius)
-        self.balls = []
+        self.balls: list[Ball] = []
 
         colors = [
             self.yellow,
@@ -67,8 +70,6 @@ class PoolGame:
                 colors.remove(color)
             self.balls.append(Ball(self.space, pos, ball_color=color))
 
-        self.running = True
-
     def run(self):
         """Main game loop with custom drawing and click-and-drag ball."""
         bounds = ((50 + self.cue_ball.radius, 50 + self.cue_ball.radius), (350 - self.cue_ball.radius, 650 - self.cue_ball.radius))
@@ -93,6 +94,16 @@ class PoolGame:
                         self.cue_ball.drag(mouse_pos, bounds)
                     if self.cue.dragging:
                         self.cue.drag(mouse_pos)
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    # Shoot cue ball in direction of cue
+                    angle = self.cue.angle
+                    self.cue.hide()
+                    power = 800  # adjust as needed
+                    impulse = (math.cos(angle) * power, math.sin(angle) * power)
+                    self.cue_ball.body.body_type = pymunk.Body.DYNAMIC
+                    self.cue_ball.body.apply_impulse_at_local_point(impulse)
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    self.reset()
 
             # Clear screen
             self.screen.fill(self.background_color)

@@ -14,6 +14,7 @@ class Cue:
         ball: the Ball object to aim at
         offset: distance from ball center to cue tip when at rest
         """
+        self.hidden = False
         self.ball = ball
         self.dragging = False
         self.angle = 0  # radians
@@ -40,7 +41,12 @@ class Cue:
         """End dragging the cue."""
         self.dragging = False
 
+    def hide(self):
+        self.hidden = True
+
     def draw(self, screen):
+        if self.hidden:
+            return
         # Draw the cue using correct trigonometry
         ball_pos = self.ball.body.position
         # Direction vector (unit)
