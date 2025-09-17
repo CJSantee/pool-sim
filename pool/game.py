@@ -6,17 +6,7 @@ from pool.ball import Ball
 from pool.cue import Cue
 
 class PoolGame:
-    def is_mouse_on_ball(self, mouse_pos):
-        ball_pos = self.ball.body.position
-        print(f'ball_pos: {ball_pos}')
-        dx = mouse_pos[0] - ball_pos[0]
-        dy = mouse_pos[1] - ball_pos[1]
-        return (dx * dx + dy * dy) <= (self.ball.radius * self.ball.radius)
-
-    # Colors
     background_color = (199, 199, 199)  # gray table
-    wall_color = (91, 47, 45)  # brown
-    ball_color = (255, 255, 255)  # white
 
     def __init__(self, width=400, height=800):
         # Setup window
@@ -52,7 +42,7 @@ class PoolGame:
                     if self.ball.is_mouse_over(mouse_pos):
                         self.ball.start_drag(mouse_pos)
                     else:
-                        self.cue.start_drag()
+                        self.cue.start_drag(mouse_pos)
                 elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                     if self.ball.dragging:
                         self.ball.stop_drag()

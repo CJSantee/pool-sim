@@ -9,7 +9,7 @@ class Cue:
     width = 6
     length = 180
 
-    def __init__(self, ball: Ball, offset=10):
+    def __init__(self, ball: Ball, offset=25):
         """
         ball: the Ball object to aim at
         offset: distance from ball center to cue tip when at rest
@@ -19,14 +19,22 @@ class Cue:
         self.angle = 0  # radians
         self.offset = offset
 
-    def start_drag(self):
+    def set_angle(self, mouse_pos: Tuple[int, int]):
+        """Set the angle of the cue based on mouse position."""
+        dx = self.ball.position[0] - mouse_pos[0]
+        dy = self.ball.position[1] - mouse_pos[1]
+        angle = math.atan2(dy, dx)
+        self.angle = angle
+
+    def start_drag(self, mouse_pos: Tuple[int, int]):
         """Begin dragging to adjust the angle of the cue."""
         self.dragging = True
+        self.set_angle(mouse_pos)
 
     def drag(self, mouse_pos: Tuple[int, int]):
         """Update the cue's angle while dragging."""
         if self.dragging:
-            self.angle = pygame.math.Vector2(mouse_pos).angle_to(pygame.math.Vector2(self.ball.body.position))
+            self.set_angle(mouse_pos)
 
     def stop_drag(self):
         """End dragging the cue."""
@@ -39,8 +47,8 @@ class Cue:
         dx = math.cos(self.angle)
         dy = math.sin(self.angle)
         # Tip of the cue (just offset from ball)
-        tip_x = ball_pos.x + self.offset * dx
-        tip_y = ball_pos.y + self.offset * dy
+        tip_x = ball_pos.x - self.offset * dx
+        tip_y = ball_pos.y - self.offset * dy
         # Butt of the cue (length away from tip, opposite direction)
         butt_x = tip_x - self.length * dx
         butt_y = tip_y - self.length * dy
